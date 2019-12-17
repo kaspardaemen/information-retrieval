@@ -102,7 +102,7 @@ def make_run_dict(file_path):
     return d
   
 retrieval = Retrieval(config)
-#retrieval.batch_retrieval()
+retrieval.batch_retrieval()
 
 qrel = {
     'q1': {
