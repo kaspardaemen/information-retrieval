@@ -8,13 +8,13 @@ import pandas as pd
 
 # FUNCTIONS:
   
-def reformat_dict(d):
+def reformat_dict(d, qrel):
     result = {}
     for key in d.keys():
         values = {}
         for value  in d[key]:
             query_id = next(iter(value))
-            score = int(value[next(iter(value))])
+            score = int(value[next(iter(value))]) if qrel else value[next(iter(value))]
             values[query_id] = score
         result[key] = values
     return result
@@ -43,14 +43,13 @@ def make_run_dict(file_path):
     return d
 
 #EVALUATION
-
-qrel_dict = make_qrel_dict('qrels-v2.txt')
-run_dict = make_run_dict('output.txt')
+read_qrels = make_qrel_dict('qrels-v2.txt')
+read_run = make_run_dict('output.txt')
     
-qrel_temp = reformat_dict(qrel_dict)
-run_temp = reformat_dict(run_dict)
+qrel = reformat_dict(read_qrels, True)
+run = reformat_dict(read_run, False)
     
-evaluator = pytrec_eval.RelevanceEvaluator(qrel_temp, {'map', 'ndcg'})
-results = evaluator.evaluate(run_temp)
+evaluator = pytrec_eval.RelevanceEvaluator(qrel, {'map', 'ndcg'})
+results = evaluator.evaluate(run)
 
     
