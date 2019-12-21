@@ -56,11 +56,11 @@ def compare_results(result_dict, result1, result2, measure):
     ttest = scipy.stats.ttest_rel(first_scores, second_scores)
     print("\nT-test results: \nTwo-sided p-value: {} \nT-statistic: {}".format(ttest.pvalue, ttest.statistic))
     print("-----------------------------------------------------------------------------------------")
-def return_all_means(result_dict):
+def return_all_means(result_dict, measure):
     query_ids = [key for key in result_dict[next(iter(result_dict))].keys()]
     means = {}
     for key in result_dict.keys():
-        mean = np.mean([ result_dict[key][query_id]['map'] for query_id in query_ids])
+        mean = np.mean([ result_dict[key][query_id][measure] for query_id in query_ids])
         means[key] = mean
     return means
     
@@ -99,7 +99,8 @@ result_dict = {
          'results_long3_90': results_long3_90
         }
 
-#compare_results(result_dict, 'results', 'results_90', 'map')
-#compare_results(result_dict, 'results', 'results_90', 'ndcg')
+compare_results(result_dict, 'results', 'results_90', 'map')
+compare_results(result_dict, 'results', 'results_90', 'ndcg')
 
-means = return_all_means(result_dict)
+ndcg_means = return_all_means(result_dict,'ndcg')
+map_means = return_all_means(result_dict,'map')
