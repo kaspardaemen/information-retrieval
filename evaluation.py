@@ -8,7 +8,6 @@ import numpy as np
 
 
 # FUNCTIONS:
-  
 def reformat_dict(d, qrel):
     result = {}
     for key in d.keys():
@@ -21,32 +20,37 @@ def reformat_dict(d, qrel):
     return result
   
 def make_qrel_dict(file_path):
-    
     df = pd.read_csv(file_path, sep='\t', header=None)
-    
     df.columns = ['query_id', 'query_number', 'document_id', 'judgement' ]
     d = {}
     for i in df['query_id'].unique():
         d[i] = [{df['document_id'][j]: df['judgement'][j]} for j in df[df['query_id']==i].index]
-    
-    
     return d
 
 def make_run_dict(file_path):
-    
     df = pd.read_csv(file_path, sep='\t',header=None)
-    
     df.columns = ['query_id', 'query_number', 'document_id', 'nr', 'score', 'method' ]
     d = {}
     for i in df['query_id'].unique():
         d[i] = [{df['document_id'][j]: df['score'][j]} for j in df[df['query_id']==i].index]
-    
     return d
+
+def agg_dict(result_dict):
+    result = {}
+    for key, value in result_dict.items():
+        maps_results = []
+        ndcg_results = []
+        for k, v in value.items():
+            maps_results.append(v['map'])
+            ndcg_results.append(v['ndcg'])
+        result[key] = {'maps': maps_results, 'ndcgs': ndcg_results}
+    return result
+    
 
 #EVALUATION
 read_qrels = make_qrel_dict('qrels-v2.txt')
 read_run = make_run_dict('output.txt')
-read_run_expanded = make_run_dict('output_expanded_80.txt')
+read_run_expanded = make_run_dict('output_expanded_80.txt')  
     
 qrel = reformat_dict(read_qrels, True)
 run = reformat_dict(read_run, False)
@@ -59,31 +63,13 @@ results_80 = evaluator.evaluate(run_80)
 #with open('queries_expanded_80.json') as f:
 #  test= json.load(f)
 
+result_dict = {
+        'results': results,
+        'results_80': results_80
+        }
+per_result = agg_dict(result_dict)
 
-maps_results = []
-maps_results_80 = []
-
-ndcg_results = []
-ndcg_results_80 = []
-#COMPARE RESULTS
-for key, value in results.items():
-    maps_results.append(value['map'])
-    ndcg_results.append(value['ndcg'])
-for key, value in results_80.items():
-    maps_results_80.append(value['map'])
-    ndcg_results_80.append(value['ndcg'])
-    
-print('MAP average of results {}'.format(np.mean(maps_results)))
-print('MAP average of results_80 {}'.format(np.mean(maps_results_80)))
-print('gain average of results {}'.format(np.mean(ndcg_results)))
-print('gain average of results_80 {}'.format(np.mean(ndcg_results_80)))
-
-   
-    
-
-
-
-
-
-
-    
+print('MAP average of results {}'.format(np.mean(per_result['results']['maps'])))
+print('MAP average of results_80 {}'.format(np.mean(per_result['results_80']['maps'])))
+print('gain average of results {}'.format(np.mean(per_result['results']['ndcgs'])))
+print('gain average of results_80 {}'.format(np.mean(per_result['results_80']['ndcgs'])))
