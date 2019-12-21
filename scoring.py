@@ -13,8 +13,8 @@ config = {"index_name": "dbpedia_2015_10",
   "smoothing_method": "dirichlet",
   "smoothing_param": 2000,
   "fields": ["names", "categories", "attributes", "similar_entity_names", "related_entity_names"],
-  "query_file": "/home/kaspar/Github/information-retrieval/queries_stopped.json",
-  "output_file": "/home/kaspar/Github/information-retrieval/output2.txt",
+  "query_file": "/home/kaspar/Github/information-retrieval/queries_expanded_80.json",
+  "output_file": "/home/kaspar/Github/information-retrieval/output_expanded_80.txt",
   "run_id": "bm25"
 }
   
