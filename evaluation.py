@@ -56,7 +56,8 @@ def compare_results(result_dict, result1, result2, measure):
     ttest = scipy.stats.ttest_rel(first_scores, second_scores)
     print("\nT-test results: \nTwo-sided p-value: {} \nT-statistic: {}".format(ttest.pvalue, ttest.statistic))
     print("-----------------------------------------------------------------------------------------")
-def return_all_means(result_dict, measure):
+
+def get_all_means(result_dict, measure):
     query_ids = [key for key in result_dict[next(iter(result_dict))].keys()]
     means = {}
     for key in result_dict.keys():
@@ -68,6 +69,8 @@ def return_all_means(result_dict, measure):
     
 
 #EVALUATION
+    
+#read the files
 read_qrels = make_qrel_dict('qrels-v2.txt')
 read_run = make_run_dict('outputs/output.txt')
 read_run_80 = make_run_dict('outputs/output_expanded_80.txt')
@@ -75,13 +78,15 @@ read_run_90 = make_run_dict('outputs/output_expanded_90.txt')
 read_run_long3_80 = make_run_dict('outputs/output_expanded_long3_80.txt') 
 read_run_long3_90 = make_run_dict('outputs/output_expanded_longer3_90.txt')  
     
+#reformat into the right input for pytrec_eval
 qrel = reformat_dict(read_qrels, True)
 run = reformat_dict(read_run, False)
 run_80 = reformat_dict(read_run_80, False)
 run_90 = reformat_dict(read_run_90, False)
 run_long3_80 = reformat_dict(read_run_long3_80, False)
 run_long3_90 = reformat_dict(read_run_long3_90, False) 
-    
+
+#evaluate results    
 evaluator = pytrec_eval.RelevanceEvaluator(qrel, {'map', 'ndcg'})
 results = evaluator.evaluate(run)
 results_80 = evaluator.evaluate(run_80)
@@ -102,5 +107,5 @@ result_dict = {
 compare_results(result_dict, 'results', 'results_90', 'map')
 compare_results(result_dict, 'results', 'results_90', 'ndcg')
 
-ndcg_means = return_all_means(result_dict,'ndcg')
-map_means = return_all_means(result_dict,'map')
+ndcg_means = get_all_means(result_dict,'ndcg')
+map_means = get_all_means(result_dict,'map')

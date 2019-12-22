@@ -8,13 +8,13 @@ config = {"index_name": "dbpedia_2015_10",
   "first_pass": {
     "1st_num_docs": 100
   },
-  "model": "bm25",
+  "model": "prms",
   "num_docs": 100,
   "smoothing_method": "dirichlet",
   "smoothing_param": 2000,
   "fields": ["names", "categories", "attributes", "similar_entity_names", "related_entity_names"],
-  "query_file": "/home/kaspar/Github/information-retrieval/expanded_queries/queries_expanded_longer3_90.json",
-  "output_file": "/home/kaspar/Github/information-retrieval/outputs/output_expanded_longer3_90.txt",
+  "query_file": "/home/kaspar/Github/information-retrieval/expanded_queries/queries_expanded_80.json",
+  "output_file": "/home/kaspar/Github/information-retrieval/outputs/output_expanded_lm_80.txt",
   "run_id": "bm25"
 }
   
